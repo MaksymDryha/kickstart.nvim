@@ -15,3 +15,7 @@ vim.keymap.set('n', '<left>', '')
 vim.keymap.set('n', '<right>', '')
 vim.keymap.set('n', '<up>', '')
 vim.keymap.set('n', '<down>', '')
+
+-- faster scrolling
+vim.keymap.set("n", "J", "10j", { noremap = true })
+vim.keymap.set("n", "K", "10k", { noremap = true })
