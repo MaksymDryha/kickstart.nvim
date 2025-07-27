@@ -27,11 +27,11 @@ return { -- Fuzzy Finder (files, lsp, etc)
     pcall(require('telescope').load_extension, 'ui-select')
 
     local builtin = require 'telescope.builtin'
-    vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = 'Find files' }) -- todo: make dot files serchable
-    vim.keymap.set('n', '<leader>sb', builtin.buffers, { desc = 'Find buffers' })
+    vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Find files' }) -- todo: make dot files serchable
+    vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Find buffers' })
 
-    vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = 'Find by grep' })
-    vim.keymap.set('n', '<leader>sc', function()
+    vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = 'Find by grep' })
+    vim.keymap.set('n', '<leader>fc', function()
       builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
         winblend = 10,
         previewer = false,
@@ -39,6 +39,6 @@ return { -- Fuzzy Finder (files, lsp, etc)
     end, { desc = 'Find in current file' })
 
 
-    vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = 'Find help' })
+    vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Find help' })
   end,
 }
