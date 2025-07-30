@@ -21,6 +21,7 @@ require('lazy').setup({
   require 'plugins.configs.color-scheme',
   require 'plugins.configs.mini',
   require 'plugins.configs.treesitter',
+  require 'plugins.configs.autoclose',
 })
 
 -- vim: ts=2 sts=2 sw=2 et
