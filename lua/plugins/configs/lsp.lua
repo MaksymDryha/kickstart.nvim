@@ -62,7 +62,7 @@ return {
         -- three most important ones:
         map('gd', require('telescope.builtin').lsp_definitions, 'Go to definition')
         map('gr', require('telescope.builtin').lsp_references, 'Go to references')
-        map('grn', vim.lsp.buf.rename, 'Rename variable')
+        map('gn', vim.lsp.buf.rename, 'Rename variable')
         --others:
         map('ga', vim.lsp.buf.code_action, 'Go to code action', { 'n', 'x' })
         map('gi', require('telescope.builtin').lsp_implementations, 'Go to implementation')
@@ -167,6 +167,7 @@ return {
     --  - settings (table): Override the default settings passed when initializing the server.
     --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
     local servers = {
+      eslint = {},
       -- clangd = {},
       -- gopls = {},
       -- pyright = {},
