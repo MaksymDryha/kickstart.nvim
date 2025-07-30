@@ -17,5 +17,9 @@ vim.keymap.set('n', '<up>', '')
 vim.keymap.set('n', '<down>', '')
 
 -- faster scrolling
-vim.keymap.set("n", "J", "10j", { noremap = true })
-vim.keymap.set("n", "K", "10k", { noremap = true })
+vim.keymap.set("n", "<C-j>", "10j", { noremap = true })
+vim.keymap.set("n", "<C-k>", "10k", { noremap = true })
+
+vim.keymap.set('n', 'K', function()
+  vim.lsp.buf.hover({ border = 'single' })
+end)
