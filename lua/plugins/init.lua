@@ -12,7 +12,6 @@ rtp:prepend(lazypath)
 
 require('lazy').setup({
   'NMAC427/guess-indent.nvim',
-  'lewis6991/gitsigns.nvim',
   require 'plugins.configs.which-key',
   require 'plugins.configs.telescope',
   require 'plugins.configs.lsp',
@@ -22,6 +21,8 @@ require('lazy').setup({
   require 'plugins.configs.mini',
   require 'plugins.configs.treesitter',
   require 'plugins.configs.autoclose',
+  require 'plugins.configs.neogit',
+  require 'plugins.configs.gitsigns',
 })
 
 -- vim: ts=2 sts=2 sw=2 et
