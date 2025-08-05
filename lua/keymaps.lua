@@ -54,5 +54,5 @@ map("n", "<leader>ww", "<C-w>w", opts)
 -- Close current window
 map("n", "<leader>wd", "<C-w>c", opts)
 
-map("n", "<leader>wn", ":vsplit<CR>", opts)
+map("n", "<leader>wn", ":vnew<CR>", opts)
 
