@@ -25,13 +25,45 @@ return {
                     },
                     right_padding = 2
                 }},
-                lualine_b = {'branch', 'diff', 'diagnostics'},
-                lualine_c = { --[[ add your center components here in place of this comment ]] },
+                lualine_b = {'branch',{
+                    'filename',
+                    file_status = true, -- Displays file status (readonly status, modified status)
+                    newfile_status = false, -- Display new file status (new file means no write after created)
+                    path = 0, -- 0: Just the filename
+                    -- 1: Relative path
+                    -- 2: Absolute path
+                    -- 3: Absolute path, with tilde as the home directory
+                    -- 4: Filename and parent dir, with tilde as the home directory
+
+                    symbols = {
+                        modified = '[+]', -- Text to show when the file is modified.
+                        readonly = '[-]', -- Text to show when the file is non-modifiable or readonly.
+                        unnamed = '[No Name]', -- Text to show for unnamed buffers.
+                        newfile = '[New]' -- Text to show for newly created file before first write
+                    }
+                }, {
+                    'diff',
+                    colored = true, -- Displays a colored diff status if set to true
+                    symbols = {
+                        added = '+',
+                        modified = '~',
+                        removed = '-'
+                    } -- Changes the symbols used by the diff.
+                }},
+                lualine_c = {'%=', {
+                    'diagnostics',
+
+                    colored = true, -- Displays diagnostics status in color if set to true.
+                    update_in_insert = true -- Update diagnostics in insert mode.
+                }},
                 lualine_x = {{
                     git_blame.get_current_blame_text,
                     cond = git_blame.is_blame_text_available
                 }},
-                lualine_y = {'filetype', 'filename', 'progress'},
+                lualine_y = {{
+                    'datetime',
+                    style = "%H:%M"
+                }, 'progress'},
                 lualine_z = {{
                     'location',
 
