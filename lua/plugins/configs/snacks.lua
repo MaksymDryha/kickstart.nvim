@@ -21,7 +21,7 @@ return {
     keys = {{
         "<leader>lg",
         function()
-            Snacks.lazygit()
+            Snacks.lazygit.open()
         end,
         desc = "Lazygit"
     }}
