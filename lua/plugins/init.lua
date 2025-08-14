@@ -16,6 +16,8 @@ require('lazy').setup({'NMAC427/guess-indent.nvim', require 'plugins.configs.whi
                        require 'plugins.configs.color-scheme', require 'plugins.configs.mini',
                        require 'plugins.configs.treesitter', require 'plugins.configs.autoclose',
                        require 'plugins.configs.neo-tree', require 'plugins.configs.neogit',
-                       require 'plugins.configs.gitsigns', require 'plugins.configs.lualine'})
+                       require 'plugins.configs.gitsigns', require 'plugins.configs.lualine',
+                       require 'plugins.configs.animation', require 'plugins.configs.breadcrumbs',
+                       require 'plugins.configs.gitblame'})
 
 -- vim: ts=2 sts=2 sw=2 et
