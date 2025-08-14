@@ -47,3 +47,5 @@ vim.o.foldmethod = "expr"
 vim.o.foldexpr = "nvim_treesitter#foldexpr()"
 vim.o.foldlevel = 99
 vim.o.foldenable = true
+vim.o.autoindent = true
+vim.o.copyindent = true
