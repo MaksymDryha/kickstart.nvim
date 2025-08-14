@@ -24,8 +24,26 @@ return {
                         left = ''
                     },
                     right_padding = 2
+
                 }},
-                lualine_b = {'branch',{
+                lualine_b = {'branch', {
+                    'filetype',
+                    colored = true, -- Displays filetype icon in color if set to true
+                    icon_only = true, -- Display only an icon for filetype
+                    padding = {
+                        right = 0,
+                        left = 1
+                    },
+                    icon = {
+                        align = 'right'
+                    } -- Display filetype icon on the right hand side
+                    -- icon =    {'X', align='right'}
+                    -- Icon string ^ in table is ignored in filetype component
+                }, {
+                    padding = {
+                        left = 0,
+                        right = 1
+                    },
                     'filename',
                     file_status = true, -- Displays file status (readonly status, modified status)
                     newfile_status = false, -- Display new file status (new file means no write after created)
