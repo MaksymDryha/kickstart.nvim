@@ -43,3 +43,7 @@ vim.o.shiftwidth = 2
 vim.o.expandtab = true
 
 vim.opt.fillchars = {eob = " "} -- remove ~ chars
+vim.o.foldmethod = "expr"
+vim.o.foldexpr = "nvim_treesitter#foldexpr()"
+vim.o.foldlevel = 99
+vim.o.foldenable = true
