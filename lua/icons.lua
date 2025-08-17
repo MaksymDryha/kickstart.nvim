@@ -7,6 +7,8 @@ return {
   git_added = ' ',
   git_modified = ' ',
   git_removed = ' ',
+  git_pull = ' ',
+  git_push = ' ',
   normal_mode = ' ',
   visual_mode = '󰴲 ',
   insert_mode = ' ',

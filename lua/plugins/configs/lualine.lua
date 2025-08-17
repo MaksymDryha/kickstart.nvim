@@ -48,6 +48,42 @@ return {
       ['!'] = 'SHELL',
       ['t'] = 'TERMINAL',
     }
+    local function git_ahead_behind_counts()
+      -- in repo?
+      if vim.fn.systemlist('git rev-parse --is-inside-work-tree')[1] ~= 'true' then
+        return 0, 0
+      end
+      -- has upstream?
+      local upstream = vim.fn.systemlist('git rev-parse --abbrev-ref --symbolic-full-name @{upstream}')[1]
+      if not upstream or upstream == '' then
+        return 0, 0
+      end
+
+      -- for @{upstream}...HEAD format is: <behind> <ahead>
+      local line = vim.fn.systemlist('git rev-list --left-right --count @{upstream}...HEAD')[1]
+      if not line or line == '' then
+        return 0, 0
+      end
+      local behind, ahead = line:match '(%d+)%s+(%d+)'
+      return tonumber(ahead) or 0, tonumber(behind) or 0
+    end
+
+    local function comp_ahead()
+      local ahead = git_ahead_behind_counts()
+      return icons.git_push .. (ahead or '0')
+    end
+
+    local function comp_behind()
+      local _, behind = git_ahead_behind_counts()
+
+      return icons.git_pull .. (behind or '0')
+    end
+    local function leftParen()
+      return '('
+    end
+    local function rightParen()
+      return ')'
+    end
     require('lualine').setup {
       options = {
         component_separators = '',
@@ -86,7 +122,7 @@ return {
             icon = icons.git,
             padding = {
               left = 1,
-              right = 2,
+              right = 0,
             },
             color = {
               fg = colors.fg,
@@ -94,6 +130,10 @@ return {
               gui = 'bold',
             },
           },
+          { leftParen, padding = { right = 0, left = 0 } },
+          { comp_ahead, color = { fg = colors.red.base }, padding = { left = 0, right = 1 } }, -- green text only
+          { comp_behind, color = { fg = colors.green.base }, padding = { left = 0, right = 0 } }, -- red text onl
+          { rightParen, padding = { right = 0, left = 0 } },
           {
             'diff',
             symbols = {
@@ -102,7 +142,7 @@ return {
               removed = icons.git_removed,
             },
             padding = {
-              left = 0,
+              left = 2,
               right = 2,
             },
             diff_color = {
@@ -201,8 +241,8 @@ return {
             'progress',
             padding = { right = 2, left = 0 },
             fmt = function(str)
-              local value = str == 'Bot' and "100%%" or str; 
-              return '(' .. value.. ')'
+              local value = str == 'Bot' and '100%%' or str
+              return '(' .. value .. ')'
             end,
           },
         },
