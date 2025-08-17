@@ -48,41 +48,42 @@ return {
       ['!'] = 'SHELL',
       ['t'] = 'TERMINAL',
     }
-    local function git_ahead_behind_counts()
-      -- in repo?
-      if vim.fn.systemlist('git rev-parse --is-inside-work-tree')[1] ~= 'true' then
-        return 0, 0
+
+    local function get_branch_status()
+      -- Are we in a git repo?
+      local inside = vim.fn.systemlist('git rev-parse --is-inside-work-tree')[1]
+      if inside ~= 'true' then
+        return ''
       end
-      -- has upstream?
+
+      -- Do we have an upstream?
       local upstream = vim.fn.systemlist('git rev-parse --abbrev-ref --symbolic-full-name @{upstream}')[1]
       if not upstream or upstream == '' then
-        return 0, 0
+        return '' -- no tracking branch
       end
 
-      -- for @{upstream}...HEAD format is: <behind> <ahead>
+      -- For @{upstream}...HEAD, the output order is: <behind> <ahead>
       local line = vim.fn.systemlist('git rev-list --left-right --count @{upstream}...HEAD')[1]
       if not line or line == '' then
-        return 0, 0
+        return ''
       end
+
       local behind, ahead = line:match '(%d+)%s+(%d+)'
-      return tonumber(ahead) or 0, tonumber(behind) or 0
-    end
+      behind = tonumber(behind) or 0
+      ahead = tonumber(ahead) or 0
 
-    local function comp_ahead()
-      local ahead = git_ahead_behind_counts()
-      return icons.git_push .. (ahead or '0')
-    end
+      if ahead == 0 and behind == 0 then
+        return ''
+      end
 
-    local function comp_behind()
-      local _, behind = git_ahead_behind_counts()
-
-      return icons.git_pull .. (behind or '0')
-    end
-    local function leftParen()
-      return '('
-    end
-    local function rightParen()
-      return ')'
+      local parts = {}
+      if ahead > 0 then
+        table.insert(parts, icons.git_push .. ahead)
+      end -- unpushed
+      if behind > 0 then
+        table.insert(parts, icons.git_pull .. behind)
+      end -- unpulled
+      return table.concat(parts, ' ')
     end
     require('lualine').setup {
       options = {
@@ -122,18 +123,58 @@ return {
             icon = icons.git,
             padding = {
               left = 1,
-              right = 0,
+              right = 2,
             },
             color = {
               fg = colors.fg,
               bg = colors.bg,
               gui = 'bold',
             },
+            fmt = function(str)
+              local branch_status = get_branch_status()
+              return branch_status ~= '' and (str .. '(' .. branch_status .. ')') or str
+            end,
           },
-          { leftParen, padding = { right = 0, left = 0 } },
-          { comp_ahead, color = { fg = colors.red.base }, padding = { left = 0, right = 1 } }, -- green text only
-          { comp_behind, color = { fg = colors.green.base }, padding = { left = 0, right = 0 } }, -- red text onl
-          { rightParen, padding = { right = 0, left = 0 } },
+          {
+            'filetype',
+            colored = true, -- Displays filetype icon in color if set to true
+            icon_only = true, -- Display only an icon for filetype
+            padding = {
+              right = 0,
+              left = 1,
+            },
+            icon = {
+              align = 'right',
+            }, -- Display filetype icon on the right hand side
+            -- icon =    {'X', align='right'}
+            -- Icon string ^ in table is ignored in filetype component
+          },
+          {
+            padding = {
+              left = 0,
+              right = 1,
+            },
+            'filename',
+            padding = { right = 2},
+            color = function(section)
+              return { fg = vim.bo.modified and colors.blue.base or colors.fg, gui = 'bold' }
+            end,
+
+            file_status = true, -- Displays file status (readonly status, modified status)
+            newfile_status = false, -- Display new file status (new file means no write after created)
+            path = 0, -- 0: Just the filename
+            -- 1: Relative path
+            -- 2: Absolute path
+            -- 3: Absolute path, with tilde as the home directory
+            -- 4: Filename and parent dir, with tilde as the home directory
+
+            symbols = {
+              modified = icons.file_modified, -- Text to show when the file is modified.
+              readonly = '[-]', -- Text to show when the file is non-modifiable or readonly.
+              unnamed = '[No Name]', -- Text to show for unnamed buffers.
+              newfile = '[New]', -- Text to show for newly created file before first write
+            },
+          },
           {
             'diff',
             symbols = {
@@ -157,10 +198,6 @@ return {
               },
             },
           },
-        },
-
-        lualine_c = {
-
           {
             'diagnostics',
             padding = {
@@ -177,45 +214,15 @@ return {
 
             update_in_insert = true, -- Update diagnostics in insert mode.
           },
+        },
+
+        lualine_c = {
+
           '%=',
           {
-            'filetype',
-            colored = true, -- Displays filetype icon in color if set to true
-            icon_only = true, -- Display only an icon for filetype
-            padding = {
-              right = 0,
-              left = 1,
-            },
-            icon = {
-              align = 'right',
-            }, -- Display filetype icon on the right hand side
-            -- icon =    {'X', align='right'}
-            -- Icon string ^ in table is ignored in filetype component
-          },
-          {
-            padding = {
-              left = 0,
-              right = 1,
-            },
-            'filename',
-            color = function(section)
-              return { fg = vim.bo.modified and colors.blue.base or colors.fg, gui = 'bold' }
-            end,
-
-            file_status = true, -- Displays file status (readonly status, modified status)
-            newfile_status = false, -- Display new file status (new file means no write after created)
-            path = 0, -- 0: Just the filename
-            -- 1: Relative path
-            -- 2: Absolute path
-            -- 3: Absolute path, with tilde as the home directory
-            -- 4: Filename and parent dir, with tilde as the home directory
-
-            symbols = {
-              modified = icons.file_modified, -- Text to show when the file is modified.
-              readonly = '[-]', -- Text to show when the file is non-modifiable or readonly.
-              unnamed = '[No Name]', -- Text to show for unnamed buffers.
-              newfile = '[New]', -- Text to show for newly created file before first write
-            },
+            'datetime',
+            icon = icons.clock,
+            style = '%H:%M',
           },
         },
         lualine_x = {},
@@ -223,11 +230,6 @@ return {
           {
             git_blame.get_current_blame_text,
             cond = git_blame.is_blame_text_available,
-          },
-          {
-            'datetime',
-            icon = icons.clock,
-            style = '%H:%M',
           },
         },
         lualine_z = {
