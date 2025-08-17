@@ -80,15 +80,64 @@ return {
           },
         },
         lualine_b = {
+
           {
             'branch',
             icon = icons.git,
+            padding = {
+              left = 1,
+              right = 2,
+            },
             color = {
               fg = colors.fg,
               bg = colors.bg,
               gui = 'bold',
             },
           },
+          {
+            'diff',
+            symbols = {
+              added = icons.git_added,
+              modified = icons.git_modified,
+              removed = icons.git_removed,
+            },
+            padding = {
+              left = 0,
+              right = 2,
+            },
+            diff_color = {
+              added = {
+                fg = colors.green.base,
+              },
+              modified = {
+                fg = colors.orange.base,
+              },
+              removed = {
+                fg = colors.red.base,
+              },
+            },
+          },
+        },
+
+        lualine_c = {
+
+          {
+            'diagnostics',
+            padding = {
+              left = 2,
+              right = 2,
+            },
+            symbols = {
+              error = icons.error,
+              warn = icons.warn,
+              info = icons.info,
+              hint = icons.hint,
+            },
+            colored = true, -- Displays diagnostics status in color if set to true.
+
+            update_in_insert = true, -- Update diagnostics in insert mode.
+          },
+          '%=',
           {
             'filetype',
             colored = true, -- Displays filetype icon in color if set to true
@@ -109,6 +158,10 @@ return {
               right = 1,
             },
             'filename',
+            color = function(section)
+              return { fg = vim.bo.modified and colors.blue.base or colors.fg, gui = 'bold' }
+            end,
+
             file_status = true, -- Displays file status (readonly status, modified status)
             newfile_status = false, -- Display new file status (new file means no write after created)
             path = 0, -- 0: Just the filename
@@ -118,61 +171,39 @@ return {
             -- 4: Filename and parent dir, with tilde as the home directory
 
             symbols = {
-              modified = '[+]', -- Text to show when the file is modified.
+              modified = icons.file_modified, -- Text to show when the file is modified.
               readonly = '[-]', -- Text to show when the file is non-modifiable or readonly.
               unnamed = '[No Name]', -- Text to show for unnamed buffers.
               newfile = '[New]', -- Text to show for newly created file before first write
             },
           },
+        },
+        lualine_x = {},
+        lualine_y = {
           {
-            'diff',
-            symbols = {
-              added = icons.git_added,
-              modified = icons.git_modified,
-              removed = icons.git_removed,
-            },
-            diff_color = {
-              added = {
-                fg = colors.green.base,
-              },
-              modified = {
-                fg = colors.orange.base,
-              },
-              removed = {
-                fg = colors.red.base,
-              },
-            },
+            git_blame.get_current_blame_text,
+            cond = git_blame.is_blame_text_available,
+          },
+          {
+            'datetime',
+            icon = icons.clock,
+            style = '%H:%M',
           },
         },
-        lualine_c = {
-          '%=',
-          {
-            'diagnostics',
-            symbols = {
-              error = icons.error,
-              warn = icons.warn,
-              info = icons.info,
-              hint = icons.hint,
-            },
-            colored = true, -- Displays diagnostics status in color if set to true.
-
-            update_in_insert = true, -- Update diagnostics in insert mode.
-          },
-        },
-        lualine_x = { {
-          git_blame.get_current_blame_text,
-          cond = git_blame.is_blame_text_available,
-        } },
-        lualine_y = { {
-          'datetime',
-          icon = icons.clock,
-          style = '%H:%M',
-        }, 'progress' },
         lualine_z = {
           {
             'location',
 
             left_padding = 2,
+            padding = { right = 0 },
+          },
+          {
+            'progress',
+            padding = { right = 2, left = 0 },
+            fmt = function(str)
+              local value = str == 'Bot' and "100%%" or str; 
+              return '(' .. value.. ')'
+            end,
           },
         },
       },

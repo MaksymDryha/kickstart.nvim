@@ -3,7 +3,7 @@ return {
   warn = ' ',
   info = ' ',
   hint = ' ',
-  git = ' ',
+  git = '',
   git_added = ' ',
   git_modified = ' ',
   git_removed = ' ',
@@ -12,5 +12,6 @@ return {
   insert_mode = ' ',
   replace_mode = ' ',
   command_mode = '󰌌 ',
-  clock = ''
+  clock = '',
+  file_modified = ''
 }
