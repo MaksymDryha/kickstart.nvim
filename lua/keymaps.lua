@@ -43,6 +43,11 @@ vim.keymap.set("n", "<leader>bn", ":bnext<CR>", {
     noremap = true,
     silent = true
 })
+
+vim.keymap.set("n", "<leader>bd", ":bd<CR>", {
+    noremap = true,
+    silent = true
+})
 -- window management
 -- helper
 local map = vim.keymap.set
